@@ -7,6 +7,15 @@
   // seem very useful, but remember it--if a function needs to provide an
   // iterator when the user does not pass one in, this will be handy.
   _.identity = function(val) {
+    // I - val
+    // O - val === Input
+    // C -
+    // E -
+
+    // PSUEDOCODE
+    // return val
+    return val;
+
   };
 
   /**
@@ -37,6 +46,30 @@
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
+    // I - array, number
+    // O - array or an object (element of array)
+    // C - assume n is either undefined or a number
+    // E - when n is undefined, return last element of array
+    //     when n is greater than the length of the array, return full array
+    //     when n === 0, return an empty array
+
+    // Pseudocode
+
+    // if there not second argument, n, return last element of array
+    if (n === undefined) {
+      return array[array.length - 1]; // can also use slice method here
+    }
+
+    else if (n === 0) {
+      return [];
+    }
+
+    // else return a slice of array equal to length of array less n
+    else {
+      return array.slice(-n);
+    }
+
+
   };
 
   // Call iterator(value, key, collection) for each element of collection.
@@ -45,6 +78,32 @@
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
+    // I - array or an object.
+    // O - no output
+    // C - work on arrays, objects, and array-like objects
+    // E - empty array or object
+
+    // Pseudocode
+
+    // Check if collection is an array or an object
+    if (Array.isArray(collection)) {
+      // if collection is an array, iterate with a for loop
+      for (let i = 0; i < collection.length; i++) {
+      // run iterator function over array elements
+        collection[i] = iterator(collection[i], i, collection);
+      }
+    }
+    else if (Object.prototype.toString.call(Object(collection)) === '[object Object]') {
+      // else if collection is an object, iterare with a for in loop
+      for (let key in collection) {
+      // run iterator function over key value
+        collection[key] = iterator(collection[key], key, collection);
+      }
+
+    }
+
+
+
   };
 
   // Returns the index at which value can be found in the array, or -1 if value
@@ -66,16 +125,178 @@
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
+    // I: array and function
+    // O: new array
+    // C:
+    // E:
+
+    // Pseudocode:
+    // Create new, empty array
+    var newArray = [];
+    // Iterate through array
+    for (let i = 0; i < collection.length; i++) {
+      // run test function on each element of array
+        // if passes, push to new array
+      if (test(collection[i])) {
+        newArray.push(collection[i]);
+      }
+    }
+
+    // return new array
+    return newArray;
   };
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
+    // I: array and function
+    // O: new array
+    // C:
+    // E:
+
+    // Pseudocode:
+    // Create new, empty array
+    // Iterate through array
+      // if element fails test function
+        // push element to new array
+    // return new array
+
+    // Pseudocode using filter:
+    // return filter on collection and (!)not test
+    return _.filter(collection, function(elem) {
+      return !test(elem);
+    });
+
+    // isEven
+    // collection = [1, 2, 3, 4, 5, 6]
+    // newCollection = []
+    // newArray = [2, 4, 6]
+
+    //
+
+    // // Pseudo
+    // // Create an array using filter that passes the truth test
+    // var trueArray = _.filter(collection, test);
+    // // Create a new empty array
+    // var newArray = [];
+    // // Iterate through the collection
+    // for (let i = 0; i < collection.length; i++) {
+    //   // Check for each element of the collection if it exists in the true array
+    //   if (!trueArray.includes(collection[i])) {
+    //     // If does not exist, add to the new array
+    //     newArray.push(collection[i]);
+    //   }
+    // }
+
+    // // return the new array
+    // return newArray;
   };
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array, isSorted, iterator) {
+
+    // I: array, optional: bool, optional: iterator
+    // O: array
+    // C:
+    // E:
+
+
+    // Pseudocode:
+    // create new empty array (uniqArray)
+    var uniqArray = [];
+    // check if iterator exists
+    if (iterator) {
+      // create new array by transforming input array with iterator (_.each) (transformedArray)
+      var transformedArray = array.slice();
+      _.each(transformedArray, iterator);
+
+      // create new empty array (uniqTransformedArray)
+      var uniqTransformedArray = [];
+      // iterate through transformed array
+      for (let i = 0; i < transformedArray.length; i++) {
+        // if element does not exist, push to uniqTransformedArray
+        if (!uniqTransformedArray.includes(transformedArray[i])) {
+          uniqTransformedArray.push(transformedArray[i]);
+        }
+      }
+
+      // iterate through uniqTransformedArray
+      for (let i = 0; i < uniqTransformedArray.length; i++) {
+        // get index of element in transformedArray
+        let index = transformedArray.indexOf(uniqTransformedArray[i]);
+        // push element of input array at index from last step to uniqArray
+        uniqArray.push(array[index]);
+      }
+    } else {
+      // iterate through input array
+      for (let i = 0; i < array.length; i++) {
+        let element = array[i];
+        // if the returned element does not exist in the new array, push to new array
+        if (!uniqArray.includes(element)) {
+          uniqArray.push(element);
+        }
+      }
+    }
+
+    // return uniqArray
+    return uniqArray;
+
+
+
+        // transformedArray = [true, false, false, false, false, false]
+        // uniqTransformedArray = [true, false]
+        // uniqArray = [1, ]
+
+
+    // // Pseudocode:
+    // // create new empty array
+    // var uniqArray = [];
+    // // iterate through input array
+    // for (let i = 0; i < array.length; i++) {
+    //   let element = array[i];
+    //   // check if iterator exists
+    //   if (iterator) {
+    //       // if true, call iterator on each element of the input array
+    //       element = iterator(element);
+    //   }
+    //   // if the returned element does not exist in the new array, push to new array
+    //   if (!uniqArray.includes(element)) {
+    //     uniqArray.push(element);
+    //   }
+
+    // }
+    // // return new array
+    // return uniqArray;
+
+
+    // // Pseudocode:
+    // // create new empty array
+    // var uniqArray = [];
+    // // iterate through input array
+    // for (let i = 0; i < array.length; i++) {
+    //   // check if iterator exists
+    //   if (iterator) {
+    //       // if true, call iterator on each element of the input array
+    //       let transformedElement = iterator(array[i]);
+    //       // if the returned element does not exist in the new array, push to new array
+    //       if (!uniqArray.includes(transformedElement)) {
+    //         uniqArray.push(transformedElement);
+    //       }
+    //   } else {
+    //     let element = array[i];
+    //     // if the returned element does not exist in the new array, push to new array
+    //     if (!uniqArray.includes(element)) {
+    //       uniqArray.push(element);
+    //     }
+    //     // check if elemetn in the input array exists in the new array
+    //       // if does not exist, push to the new array
+    //   }
+
+    // }
+    // // return new array
+    // return uniqArray;
+
   };
 
 
@@ -84,6 +305,25 @@
     // map() is a useful primitive iteration function that works a lot
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
+
+    // I - array or object, iterator
+    // O - array
+    // C -
+    // E - empty array or empty object
+
+    // Pseudocode:
+    // Create result array
+    // If collection is an array:
+      // Iterate through collection
+        // Call iterator function on each element
+        // push transformed element to result array
+    // If collection is an object:
+      // Iterate through collection
+        // Call iterator function on each element
+        // push transformed element to result array
+    // Return result array
+
+
   };
 
   /*
@@ -107,19 +347,19 @@
   // Reduces an array or object to a single value by repetitively calling
   // iterator(accumulator, item) for each item. accumulator should be
   // the return value of the previous iterator call.
-  //  
+  //
   // You can pass in a starting value for the accumulator as the third argument
   // to reduce. If no starting value is passed, the first element is used as
   // the accumulator, and is never passed to the iterator. In other words, in
   // the case where a starting value is not passed, the iterator is not invoked
   // until the second element, with the first element as its second argument.
-  //  
+  //
   // Example:
   //   var numbers = [1,2,3];
   //   var sum = _.reduce(numbers, function(total, number){
   //     return total + number;
   //   }, 0); // should be 6
-  //  
+  //
   //   var identity = _.reduce([5], function(total, number){
   //     return total + number * number;
   //   }); // should be 5, regardless of the iterator function passed in
